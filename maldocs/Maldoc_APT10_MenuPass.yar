@@ -8,8 +8,6 @@
 
 /* Rule Set ----------------------------------------------------------------- */
 
-import "hash"
-
 rule Maldoc_APT10_MenuPass {
    meta:
       description = "Detects APT10 MenuPass Phishing"
@@ -23,8 +21,6 @@ rule Maldoc_APT10_MenuPass {
       $s5 = "C:\\ProgramData\\libcurl.txt"
       $s6 = "C:\\ProgramData\\3F2E3AB9"
    condition:
-      any of them or
-      hash.md5(0, filesize) == "4f83c01e8f7507d23c67ab085bf79e97" or
-      hash.md5(0, filesize) == "f188936d2c8423cf064d6b8160769f21" or
-      hash.md5(0, filesize) == "cca227f70a64e1e7fcf5bccdc6cc25dd"
+      any of them 
+
 }
