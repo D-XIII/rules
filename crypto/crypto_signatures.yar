@@ -1057,6 +1057,18 @@ rule RijnDael_AES_CHAR
 		$c0
 }
 
+rule ARIA_SB2
+{	meta:
+		author = "spelissier"
+		description = "Aria SBox 2"
+		date = "2020-12"
+		reference="http://210.104.33.10/ARIA/doc/ARIA-specification-e.pdf#page=7"
+	strings:
+		$c0 = { E2 4E 54 FC 94 C2 4A CC 62 0D 6A 46 3C 4D 8B D1 5E FA 64 CB B4 97 BE 2B BC 77 2E 03 D3 19 59 C1 }
+	condition:
+		$c0
+}
+
 rule RijnDael_AES_CHAR_inv
 {	meta:
 		author = "_pusher_"
@@ -1065,17 +1077,6 @@ rule RijnDael_AES_CHAR_inv
 		date = "2016-07"
 	strings:
 		$c0 = { 48 38 47 00 88 17 33 D2 8A 56 0D 8A 92 48 38 47 00 88 57 01 33 D2 8A 56 0A 8A 92 48 38 47 00 88 57 02 33 D2 8A 56 07 8A 92 48 38 47 00 88 57 03 33 D2 8A 56 04 8A 92 }
-	condition:
-		$c0
-}
-
-rule RijnDael_AES_LONG
-{	meta:
-		author = "_pusher_"
-		description = "RijnDael AES"
-		date = "2016-06"
-	strings:
-		$c0 = { 63 7C 77 7B F2 6B 6F C5 30 01 67 2B FE D7 AB 76 CA 82 C9 7D FA 59 47 F0 AD D4 A2 AF 9C A4 72 C0 }
 	condition:
 		$c0
 }
@@ -1472,16 +1473,18 @@ rule Chacha_256_constant {
 		reference = "https://tools.ietf.org/html/rfc8439#page-8"
 	strings:
 		$c0 = "expand 32-byte k"
+		$split1 = "expand 3"
+		$split2 = "2-byte k"
 	condition:
-		$c0
+		$c0 or ( $split1 and $split2 )
 }
 
 rule ecc_order {
     meta:
 		author = "spelissier"
 		description = "Look for known Elliptic curve orders"
-		date = "2020-01"
-		version = "0.1"
+		date = "2021-07"
+		version = "0.2"
 	strings:
 		$secp192k1 = { FF FF FF FF FF FF FF FF FF FF FF FE 26 F2 FC 17 0F 69 46 6A 74 DE FD 8D}
 		$secp192r1 = { FF FF FF FF FF FF FF FF FF FF FF FF 99 DE F8 36 14 6B C9 B1 B4 D2 28 31}
@@ -1490,6 +1493,7 @@ rule ecc_order {
 		$secp256k1 = { FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FE BA AE DC E6 AF 48 A0 3B BF D2 5E 8C D0 36 41 41 }
 		$prime256v1 = { FF FF FF FF 00 00 00 00 FF FF FF FF FF FF FF FF BC E6 FA AD A7 17 9E 84 F3 B9 CA C2 FC 63 25 51 }
 		$secp384r1 = { FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF C7 63 4D 81 F4 37 2D DF 58 1A 0D B2 48 B0 A7 7A EC EC 19 6A CC C5 29 73 }
+		$bls12_381_r = { 01 00 00 00 FF FF FF FF FE 5B FE FF 02 A4 BD 53 05 D8 A1 09 08 D8 39 33 48 7D 9D 29 53 A7 ED 73}
 	condition:
 		any of them
 }
@@ -1558,4 +1562,19 @@ rule SHA3_interleaved {
 		$c21 = { 0100000081000080 }
 	condition:
 		10 of them
+}
+
+rule SipHash_big_endian_constants {
+    meta:
+		author = "spelissier"
+		description = "Look for SipHash constants in big endian"
+		date = "2020-07"
+		reference = "https://131002.net/siphash/siphash.pdf#page=6"
+	strings:
+		$c0 = "uespemos"
+		$c1 = "modnarod"
+		$c2 = "arenegyl"
+		$c3 = "setybdet"
+	condition:
+		2 of them
 }
